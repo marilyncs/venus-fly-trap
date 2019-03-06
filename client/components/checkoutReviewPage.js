@@ -23,13 +23,15 @@ class CheckoutReview extends React.Component {
     this.props.setStatus('success', 'active')
   }
 
-  onToken = (token, addresses) => {
-    console.log('Your Payment has been received!')
-    this.handleCheckoutButton()
+  onToken = price => {
+    this.handleCheckoutButton(price)
   }
 
   render() {
     const cart = this.props.cart.activeCart
+    const shipping = this.props.checkout
+
+    console.log('SHIPPING: ', shipping)
 
     if (cart) {
       const totalPrice = cart.reduce(
@@ -39,8 +41,15 @@ class CheckoutReview extends React.Component {
 
       return (
         <div className="cart-container">
-          <h1>REVIEW CART</h1>
+          <h1>REVIEW ORDER</h1>
           <hr />
+          <h3>Shipping Address:</h3>
+          {shipping.name} <br />
+          {shipping.email} <br />
+          {shipping.address} <br />
+          {`${shipping.city} ${shipping.state} ${shipping.zip}`} <br />
+          <hr />
+          <h3>Cart:</h3>
           {cart.map(item => (
             <div className="cart" key={item.id}>
               <img src={item.imageUrl} />
@@ -67,18 +76,21 @@ class CheckoutReview extends React.Component {
                 name="payment"
                 className="remove"
                 value=""
-                onClick={() => this.props.setStatus('payment', '')}
+                onClick={() => this.props.setStatus('payment', '', 'payment')}
               >
                 Back
               </button>
-
               <StripeCheckout
+                image="https://image.shutterstock.com/image-vector/leaf-icon-symbol-260nw-1106934620.jpg"
+                name="Venus Fly Trap"
                 email={this.props.user.email}
                 amount={totalPrice}
                 billingAddress
-                zipcode
+                shippingAddress
+                zipCode
+                locale
                 stripeKey="pk_test_3m2b0a1fAot4GiMEjKhu1fIQ"
-                token={this.onToken}
+                token={() => this.onToken(totalPrice)}
               />
             </div>
           </div>
@@ -91,7 +103,8 @@ class CheckoutReview extends React.Component {
 const mapStateToProps = state => {
   return {
     cart: state.cart,
-    user: state.user
+    user: state.user,
+    checkout: state.checkout
   }
 }
 

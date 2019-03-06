@@ -13,7 +13,8 @@ import {
   CheckoutForm,
   CheckoutReview,
   CheckoutSuccess,
-  OrderHistory
+  OrderHistory,
+  NoMatch
 } from './components'
 import {me} from './store'
 
@@ -31,6 +32,9 @@ class Routes extends Component {
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
+
+
+        <Route exact path="/" component={UserHome} />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/cart" component={Cart} />
@@ -47,10 +51,12 @@ class Routes extends Component {
             <Route path="/review" component={CheckoutReview} />
             <Route path="/confirmation" component={CheckoutSuccess} />
             <Route path="/orders" component={OrderHistory} />
+            <Route path="*" component={NoMatch} status={404} />
           </Switch>
         )}
         {/* Displays our Login component as a fallback */}
-        <Route component={UserHome} />
+        <Route path="*" component={NoMatch} status={404} />
+        {/* <Route component={UserHome} /> */}
       </Switch>
     )
   }
